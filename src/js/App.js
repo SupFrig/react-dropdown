@@ -32,9 +32,9 @@ const App = (props) => {
     return <div className="Container">
         <h1>Dropdown Component</h1>
         <h3>Default</h3>
-        <Dropdown options={options}/>
+        <Dropdown options={options} multiple={true}/>
         <h3>with title</h3>
-        <Dropdown title="Quel est mon groupe préféré" options={options}/>
+        <Dropdown title="Quel est mon groupe préféré" options={options} multiple={true}/>
     </div>
 }
 

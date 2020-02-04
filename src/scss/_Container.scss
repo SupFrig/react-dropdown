@@ -3,8 +3,17 @@
 	margin: 0 auto;
 	color: $text-color;
 	font-family: $font-stack;
+    background: #fff;
+    padding: 1rem 2rem;
 
 	h1 {
-		
-	}
+        font-size: 24px;
+        font-weight: 900;
+        line-height: 28px;
+        padding-bottom: 2rem;
+    }
+    
+    h3 {
+        padding: 2rem 0rem;
+    }
 }
