@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component, useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 
 const Dropdown = (props)=> {
@@ -9,8 +9,21 @@ const Dropdown = (props)=> {
     const itemClickHandler = (e) => {
         let updatedDefaultValue = props.options.filter(option => option.value == e.target.getAttribute('data-value')).shift();
         setDefaultValue(updatedDefaultValue);
-        setActive(false);
-    }
+        //setActive(false);
+    };
+
+    useEffect(() => {
+        console.log('useEffect');
+        document.addEventListener('click', (e) => {
+            if(Boolean(e.target.getAttribute('class'))){
+                if(targetClass.includes('Dropdown')){
+                    return;
+                }
+            }
+            setActive(false);
+            
+        });
+    }, []);
 
     return (
         <div className="Dropdown">
