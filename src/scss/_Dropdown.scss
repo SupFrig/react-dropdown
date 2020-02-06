@@ -19,19 +19,32 @@
         }
     }
 
+    &-title {
+        display: block;
+        text-transform: uppercase;
+        font-size: 10px;	
+        font-weight: 500;	
+        line-height: 16px;
+        color: #999999;
+    }
+
     &-list {
         opacity: 0;
         display: none;
         max-height: 0px;
         position: absolute;
         left: -26px;
-        top: -13px;
+        top: -33px;
         min-width: 250px;
         background: #fff;
         line-height: 25px;
         padding: 10px;
         z-index: 1;
         box-shadow: 3px 3px 5px 2px rgba(229,229,229,1);
+
+        &-container {
+            position: relative;
+        }
 
         &--active {
             max-height: 100vh;
@@ -43,6 +56,7 @@
             text-decoration: none;
             color: #111;
             padding-left: 16px;
+            cursor: pointer;
 
             &:hover {
                 color: #00A6F0;

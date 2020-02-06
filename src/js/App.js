@@ -20,7 +20,8 @@ const options = [
     },
     {
         text: "Death Grips",
-        value: "death-grips"
+        value: "death-grips",
+        selected: true
     },
     {
         text: "Pissed Jeans",
@@ -34,7 +35,7 @@ const App = (props) => {
         <h3>Default</h3>
         <Dropdown options={options} multiple={true}/>
         <h3>with title</h3>
-        <Dropdown title="Quel est mon groupe préféré" options={options} multiple={true}/>
+        <Dropdown title="Mes groupes préférés" options={options} multiple={true}/>
     </div>
 }
 
