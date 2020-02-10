@@ -41,6 +41,22 @@
         margin-bottom: 12px;
     }
 
+    &-filter {
+        color: #999;
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 26px;
+        text-decoration: none;
+        padding-left: 16px;
+        cursor: pointer;
+    }
+
+    &-delimiter {
+        height: 2px;
+        margin: 10px 0; 
+        background: #E0E0E0;
+    }
+
     &-list {
         opacity: 0;
         display: none;
