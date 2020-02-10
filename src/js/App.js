@@ -54,7 +54,7 @@ const App = (props) => {
         <h3>Multiple with search</h3>
         <Dropdown options={optionsMultiple} multiple={true} search={true}/>
         <h3>Multiple with search, select & clear buttons, display offset</h3>
-        <Dropdown options={optionsVeryLong} multiple={true} search={true} clearButton={true} selectAllButton={true} offset={8}/>
+        <Dropdown options={optionsVeryLong} multiple={true} search={true} clearButton={true} selectAllButton={true} offset={4}/>
     </div>
 }
 
