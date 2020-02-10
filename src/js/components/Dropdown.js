@@ -4,7 +4,6 @@ import DropdownItem from "./dropdownItem.js";
 const Dropdown = (props) => {
     const dropdownRef = useRef(null);
     const defaultText = props.defaultText === undefined ? "Sélectionnez une valeur" : props.defaultText;
-    const useMountEffect = (fun) => useEffect(fun, [])
     const [options,setOptions] = useState(props.options);
     const [offset,setOffset] = useState(props.offset === undefined ? false : props.offset);
     const [selectedValues, setSelectedValues] = useState(options.filter(option => option.selected === true).map(({value}) => value));
@@ -12,8 +11,14 @@ const Dropdown = (props) => {
     const [active,setActive] = useState(false);
     
 
-    const buttonClickHandler = () => setActive(!active);
-    const documentClickHandler = () => {document.addEventListener('click', (e) => dropdownRef.current.contains(e.target) ? false : setActive(false))};
+    const buttonClickHandler = (e) => {
+        setActive(!active);
+        e.preventDefault();
+    };
+    const documentClickHandler = () => document.addEventListener('click', (e) => {
+        console.log(typeof (dropdownRef));
+        dropdownRef.current.contains(e.target) ? false : setActive(false);
+    });
 
     const defineText = () => {
         if(selectedValues.length > 1){
@@ -41,6 +46,7 @@ const Dropdown = (props) => {
             }
         }else{
             updatedSelectedValues = [itemValue];
+
             //si la sélection n'est pas multiple, on ferme le select au clic comme sur un select html classique
             setActive(false);
         }
@@ -51,6 +57,12 @@ const Dropdown = (props) => {
     //on filtre la recherche sur le texte, en lowercase
     const filterValues = (e) => setOptions(props.options.filter(option => option.text.toLowerCase().includes(e.target.value)));
 
+    const loadMore = () => {
+        let optionsToLoad = props.options.filter(propsOption => !options.includes(propsOption)).slice(0,offset);
+        setOptions([...options,...optionsToLoad]);
+        setActive(true);
+    };
+
     //Mise à jour du texte quand la valeur est modifiée
     useEffect(() => {
         defineText();
@@ -59,10 +71,9 @@ const Dropdown = (props) => {
     //exécution à la création du composant
     useEffect(() => {
         documentClickHandler();
-
         if(offset) setOptions(options.slice(0,offset));
-        
     }, []);
+    
     return (
         <div className="Dropdown" ref={dropdownRef}>
             {props.title !== undefined ? <span className="Dropdown-title">{props.title}</span> : false}
@@ -76,13 +87,13 @@ const Dropdown = (props) => {
                     {options.map((option,i) => {
                         return <DropdownItem 
                             key={i} 
-                            className={selectedValues.includes(option.value) ? "Dropdown-list-item Dropdown-list-item--selected" : "Dropdown-list-item"}
+                            className={selectedValues.includes(option.value) ? "Dropdown-list-item Dropdown-list-item--selected" : "Dropdown-list-item"} 
                             value={option.value} 
-                            clickHandler={itemClickHandler}
+                            clickHandler={itemClickHandler} 
                             text={option.text}
                         />
                     })}
-                    {(offset && offset < props.options.length) ? <li className="Dropdown-more">Déplier</li> : false}
+                    {(offset && options.length < props.options.length) ? <li className="Dropdown-more" onClick={loadMore}></li> : false}
                 </ul>
             </div>
             <select readOnly value={props.multiple ? selectedValues : selectedValues[0]} multiple={props.multiple ? true : false}>
