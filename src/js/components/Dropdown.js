@@ -1,5 +1,6 @@
 import React, { Component, useState, useEffect, useRef } from "react";
 import DropdownItem from "./dropdownItem.js";
+import Axios from "axios";
 
 const Dropdown = (props) => {
     const dropdownRef = useRef(null);
@@ -17,6 +18,7 @@ const Dropdown = (props) => {
         e.preventDefault();
     };
 
+    //fermeture du dropdown au clic externe
     const documentClickHandler = () => document.addEventListener('click', (e) => {
         if(e.target.getAttribute('class') === 'Dropdown-more') return;
         dropdownRef.current.contains(e.target) ? false : setActive(false);
@@ -24,16 +26,14 @@ const Dropdown = (props) => {
 
     const defineText = () => {
         if(selectedValues.length > 1){
-            //plusieurs options sélectionnées
             setButtonText(`${selectedValues.length} valeurs sélectionnées`);
         }else if(selectedValues.length == 1){
-            //une seule option sélectionnée
             setButtonText(props.options.filter(option => option.value == selectedValues[0])[0].text);
         }else{
-            //pas de sélection
             setButtonText(defaultText);
         }
     };
+
     const itemClickHandler = (e) => {
         let itemValue = e.target.getAttribute('data-value');
         let updatedSelectedValues;
@@ -55,14 +55,16 @@ const Dropdown = (props) => {
         
         setSelectedValues(updatedSelectedValues);
     };
-
+    
     const filterOptions = () => {
         //filtre sur la recherche
         let updatedOptions = props.options.filter(option => option.text.toLowerCase().includes(search));
 
         //filtre sur la limite d'affichage
-        updatedOptions = updatedOptions.slice(0,offset);
+        if(offset) updatedOptions = updatedOptions.slice(0,offset);
+ 
         setOptions(updatedOptions);
+        setSelectedValues(selectedValues.filter(option => updatedOptions.map(({value}) => value).includes(option)));
     };
 
     const loadMore = () => {
@@ -93,12 +95,11 @@ const Dropdown = (props) => {
             <div className="Dropdown-list-container">
                 <ul className={active ? "Dropdown-list Dropdown-list--active" : "Dropdown-list"}>
                     {props.search ? <li><input className="Dropdown-search" onChange={(e) => setSearch(e.target.value)} type="text" placeholder="Search"/></li> : false}
-
-                    {props.selectAllButton ? <li className="Dropdown-filter" onClick={() => setSelectedValues(options.map(({value}) => value))}>Select All</li> : false}
-                    {props.clearButton ? <li className="Dropdown-filter" onClick={() => setSelectedValues([])}>Clear All</li> : false}
-                    {props.selectAllButton || props.clearButton ? <li className="Dropdown-delimiter"></li> : false}
+                    {props.selectAllButton && options.length > 0 ? <li className="Dropdown-filter" onClick={() => setSelectedValues(options.map(({value}) => value))}>Select All</li> : false}
+                    {props.clearButton && options.length > 0 ? <li className="Dropdown-filter" onClick={() => setSelectedValues([])}>Clear All</li> : false}
+                    {(props.selectAllButton || props.clearButton) && options.length > 0  ? <li className="Dropdown-delimiter"></li> : false}
                     
-                    {options.map((option,i) => {
+                    {options.length > 0 ? options.map((option,i) => {
                         return <DropdownItem 
                             key={i} 
                             className={selectedValues.includes(option.value) ? "Dropdown-list-item Dropdown-list-item--selected" : "Dropdown-list-item"} 
@@ -106,7 +107,7 @@ const Dropdown = (props) => {
                             clickHandler={itemClickHandler} 
                             text={option.text}
                         />
-                    })}
+                    }) : <li>Aucuns résultat</li>}
                     {(offset && offset < props.options.length) ? <li className="Dropdown-more" onClick={loadMore}></li> : false}
                 </ul>
             </div>
