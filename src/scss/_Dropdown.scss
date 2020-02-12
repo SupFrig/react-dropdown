@@ -82,14 +82,6 @@
         }
 
         &-item {
-            text-decoration: none;
-            color: #111;
-            padding-left: 16px;
-            cursor: pointer;
-
-            &:hover {
-                color: #00A6F0;
-            }
 
             &--selected {
                 color: #00A6F0;
