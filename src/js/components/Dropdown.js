@@ -1,7 +1,7 @@
 import React, { Component, useState, useEffect, useRef } from "react";
 import DropdownItem from "./dropdownItem.js";
 import Axios from "axios";
-import { DropdownInput } from "./../styles/styles.js";
+import { DropdownContainer,DropdownButton,DropdownFilter,DropdownTitle,DropdownInput,DropdownDelimiter,DropdownSearchInput,DropdownMore,DropdownList,DropdownListContainer } from "./../styles/styles.js";
 
 const Dropdown = (props) => {
     const dropdownRef = useRef(null);
@@ -22,7 +22,6 @@ const Dropdown = (props) => {
 
     //fermeture du dropdown au clic externe
     const documentClickHandler = () => document.addEventListener('click', (e) => {
-        if(e.target.getAttribute('class') === 'Dropdown-more') return;
         dropdownRef.current.contains(e.target) ? false : setActive(false);
     });
 
@@ -91,15 +90,15 @@ const Dropdown = (props) => {
     }, []);
 
     return (
-        <div className="Dropdown" ref={dropdownRef}>
-            {props.title !== undefined ? <span className="Dropdown-title">{props.title}</span> : false}
-            <a className="Dropdown-button" onClick={buttonClickHandler} href="#">{buttonText}</a>
-            <div className="Dropdown-list-container">
-                <ul className={active ? "Dropdown-list Dropdown-list--active" : "Dropdown-list"}>
-                    {props.search ? <li><input className="Dropdown-search" onChange={(e) => setSearch(e.target.value)} type="text" placeholder="Search"/></li> : false}
-                    {props.selectAllButton && options.length > 0 ? <li className="Dropdown-filter" onClick={() => setSelectedOptions(options.map(({value}) => value))}>Select All</li> : false}
-                    {props.clearButton && options.length > 0 ? <li className="Dropdown-filter" onClick={() => setSelectedOptions([])}>Clear All</li> : false}
-                    {(props.selectAllButton || props.clearButton) && options.length > 0  ? <li className="Dropdown-delimiter"></li> : false}
+        <DropdownContainer ref={dropdownRef}>
+            {props.title !== undefined ? <DropdownTitle>{props.title}</DropdownTitle> : false}
+            <DropdownButton onClick={buttonClickHandler}>{buttonText}</DropdownButton>
+            <DropdownListContainer>
+                <DropdownList active={active}>
+                    {props.search ? <li><DropdownSearchInput onChange={(e) => setSearch(e.target.value)} type="text" placeholder="Search"/></li> : false}
+                    {props.selectAllButton && options.length > 0 ? <DropdownFilter onClick={() => setSelectedOptions(options.map(({value}) => value))}>Select All</DropdownFilter> : false}
+                    {props.clearButton && options.length > 0 ? <DropdownFilter onClick={() => setSelectedOptions([])}>Clear All</DropdownFilter> : false}
+                    {(props.selectAllButton || props.clearButton) && options.length > 0  ? <DropdownDelimiter/> : false}
                     
                     {options.length > 0 ? options.map((option,i) => {
                         return <DropdownItem 
@@ -110,15 +109,15 @@ const Dropdown = (props) => {
                             text={option.text}
                         />
                     }) : <li>Aucuns résultat</li>}
-                    {(offset && offset < props.options.length) ? <li className="Dropdown-more" onClick={loadMore}></li> : false}
-                </ul>
-            </div>
+                    {offset ? <DropdownMore onClick={loadMore}></DropdownMore> : false}
+                </DropdownList>
+            </DropdownListContainer>
             <DropdownInput readOnly value={props.multiple ? selectedOptions : selectedOptions[0]} multiple={props.multiple ? true : false}>
             {options.map((option,i) => {
                 return <option key={i} value={option.value}>{option.text}</option>
             })}
             </DropdownInput>
-        </div>
+        </DropdownContainer>
     );
 }
 
