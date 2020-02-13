@@ -1,20 +1,33 @@
-import React, { Component, useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import DropdownItem from "./dropdownItem.js";
 import Axios from "axios";
-import { DropdownContainer,DropdownButton,DropdownFilter,DropdownTitle,DropdownInput,DropdownDelimiter,DropdownSearchInput,DropdownMore,DropdownList,DropdownListContainer } from "./../styles/styles.js";
+import { 
+    DropdownContainer,
+    DropdownButton,
+    DropdownFilter,
+    DropdownTitle,
+    DropdownInput,
+    DropdownDelimiter,
+    DropdownSearchInput,
+    DropdownMore,
+    DropdownList,
+    DropdownListContainer 
+} from "./../styles/styles.js";
 
 const Dropdown = (props) => {
     const dropdownRef = useRef(null);
     const defaultText = props.defaultText === undefined ? "Sélectionnez une valeur" : props.defaultText;
-    const [options,setOptions] = useState(props.options);
+    const originalOptions = props.options === undefined ? [] : props.options;
+    const [url,setUrl] = useState(props.url === undefined ? false : props.url);
+    const [urlParams,setUrlParams] = useState(props.urlParams === undefined ? false : props.urlParams);
+    const [richDataRenderer,setRichDataRenderer] = useState(props.renderComponent === undefined ? false : props.renderComponent);
+    const [options,setOptions] = useState(props.options === undefined ? [] : props.options);
     const [selectedOptions, setSelectedOptions] = useState(options.filter(option => option.selected === true).map(({value}) => value));
     const [search,setSearch] = useState('');
     const [offset,setOffset] = useState(props.offset === undefined ? false : props.offset);
-    
     const [buttonText, setButtonText] = useState(defaultText);
     const [active,setActive] = useState(false);
 
-    
     const buttonClickHandler = (e) => {
         setActive(!active);
         e.preventDefault();
@@ -29,7 +42,7 @@ const Dropdown = (props) => {
         if(selectedOptions.length > 1){
             setButtonText(`${selectedOptions.length} valeurs sélectionnées`);
         }else if(selectedOptions.length == 1){
-            setButtonText(props.options.filter(option => option.value == selectedOptions[0])[0].text);
+            setButtonText(originalOptions.filter(option => option.value == selectedOptions[0])[0].text);
         }else{
             setButtonText(defaultText);
         }
@@ -37,6 +50,8 @@ const Dropdown = (props) => {
 
     const itemClickHandler = (e) => {
         let itemValue = e.target.getAttribute('data-value');
+        console.log(itemValue);
+        console.log(selectedOptions);
         let updatedSelectedOptions;
         if(props.multiple){
             if(selectedOptions.includes(itemValue)){
@@ -59,7 +74,7 @@ const Dropdown = (props) => {
     
     const filterOptions = () => {
         //filtre sur la recherche
-        let updatedOptions = props.options.filter(option => option.text.toLowerCase().includes(search));
+        let updatedOptions = originalOptions.filter(option => option.text.toLowerCase().includes(search));
 
         //filtre sur la limite d'affichage
         if(offset) updatedOptions = updatedOptions.slice(0,offset);
@@ -83,12 +98,43 @@ const Dropdown = (props) => {
         filterOptions();
     }, [search,offset]);
 
+    //appel ajax et valeur par défaut des options
+    useEffect(() => {
+        if(url){
+            
+            Axios.get(url,{
+                params: urlParams
+            })
+                .then(function (response) {
+                    let updatedOptions = response.data.projects.map((object) => {
+                        let item = {
+                            value: object.slug,
+                            data: object
+                        };
+                        console.log(object.slug);
+                        return item;
+                    });
+                    
+                    console.log(updatedOptions);
+                    setOptions(updatedOptions);
+                    console.log(options);
+
+                    setRichDataRenderer(true);
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                });
+        }
+        
+    }, [url]);
+
     //exécution à la création du composant
     useEffect(() => {
         documentClickHandler();
         if(offset) setOptions(options.slice(0,offset));
     }, []);
-
+    
     return (
         <DropdownContainer ref={dropdownRef}>
             {props.title !== undefined ? <DropdownTitle>{props.title}</DropdownTitle> : false}
@@ -106,7 +152,8 @@ const Dropdown = (props) => {
                             active={selectedOptions.includes(option.value)} 
                             value={option.value} 
                             clickHandler={itemClickHandler} 
-                            text={option.text}
+                            richDataRenderer={richDataRenderer} 
+                            text={option.text} 
                         />
                     }) : <li>Aucuns résultat</li>}
                     {offset ? <DropdownMore onClick={loadMore}></DropdownMore> : false}

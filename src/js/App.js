@@ -44,6 +44,12 @@ const optionsVeryLong = [
     {text: "Wire", value: "wire"},
 ];
 
+const urlParams = {
+    q: "sort:popular",
+    extra_fields: "main_image,owner,partnerships",
+    lang: "fr"
+};
+
 const App = (props) => {
     return <div className="Container">
         <h1>Dropdown Component</h1>
@@ -55,7 +61,15 @@ const App = (props) => {
         <Dropdown options={optionsMultiple} multiple={true} search={true}/>
         <h3>Multiple with search, select & clear buttons, display offset</h3>
         <Dropdown options={optionsVeryLong} multiple={true} search={true} clearButton={true} selectAllButton={true} offset={4}/>
-
+        <h3>API Endpoint</h3>
+        <Dropdown 
+            url="https://api.ulule.com/v1/search/projects" 
+            urlParams={urlParams}
+            multiple={true} 
+            search={true} 
+            clearButton={true} 
+            selectAllButton={true} 
+            offset={8}/>
     </div>
 }
 
