@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import DropdownItem from "./dropdownItem.js";
-import Axios from "axios";
+import useAxios from 'axios-hooks';
+
 import { 
+    Resetter,
     DropdownContainer,
     DropdownButton,
     DropdownFilter,
@@ -17,7 +19,7 @@ import {
 const Dropdown = (props) => {
     const dropdownRef = useRef(null);
     const defaultText = props.defaultText === undefined ? "Sélectionnez une valeur" : props.defaultText;
-    const originalOptions = props.options === undefined ? [] : props.options;
+    const [originalOptions,setOriginalOptions] = useState(props.options === undefined ? [] : props.options);
     const [url,setUrl] = useState(props.url === undefined ? false : props.url);
     const [urlParams,setUrlParams] = useState(props.urlParams === undefined ? false : props.urlParams);
     const [richDataRenderer,setRichDataRenderer] = useState(props.renderComponent === undefined ? false : props.renderComponent);
@@ -27,6 +29,7 @@ const Dropdown = (props) => {
     const [offset,setOffset] = useState(props.offset === undefined ? false : props.offset);
     const [buttonText, setButtonText] = useState(defaultText);
     const [active,setActive] = useState(false);
+    const [{ data: response, loading, error }] = useAxios(url);
 
     const buttonClickHandler = (e) => {
         setActive(!active);
@@ -34,9 +37,7 @@ const Dropdown = (props) => {
     };
 
     //fermeture du dropdown au clic externe
-    const documentClickHandler = () => document.addEventListener('click', (e) => {
-        dropdownRef.current.contains(e.target) ? false : setActive(false);
-    });
+    const documentClickHandler = () => document.addEventListener('click', (e) => dropdownRef.current.contains(e.target) ? false : setActive(false));
 
     const defineText = () => {
         if(selectedOptions.length > 1){
@@ -49,9 +50,11 @@ const Dropdown = (props) => {
     };
 
     const itemClickHandler = (e) => {
+        e.stopPropagation();
         let itemValue = e.target.getAttribute('data-value');
-        console.log(itemValue);
-        console.log(selectedOptions);
+        //TODO faire un truc clean pour récupérer l'event itemClickHandler depuis le DOM ayant l'attrivut data value
+        if(itemValue === null) itemValue = e.target.parentNode.getAttribute('data-value');
+
         let updatedSelectedOptions;
         if(props.multiple){
             if(selectedOptions.includes(itemValue)){
@@ -68,7 +71,6 @@ const Dropdown = (props) => {
             //si la sélection n'est pas multiple, on ferme le select au clic comme sur un select html classique
             setActive(false);
         }
-        
         setSelectedOptions(updatedSelectedOptions);
     };
     
@@ -100,35 +102,28 @@ const Dropdown = (props) => {
 
     //appel ajax et valeur par défaut des options
     useEffect(() => {
-        if(url){
+        if(!loading){
+            let updatedOptions = response.projects.map((object) => {
+                let item = {
+                    text: object[`name_${object.lang}`],
+                    value: object.slug,
+                    data: object
+                };
+                return item;
+            });
             
-            Axios.get(url,{
-                params: urlParams
-            })
-                .then(function (response) {
-                    let updatedOptions = response.data.projects.map((object) => {
-                        let item = {
-                            value: object.slug,
-                            data: object
-                        };
-                        console.log(object.slug);
-                        return item;
-                    });
-                    
-                    console.log(updatedOptions);
-                    setOptions(updatedOptions);
-                    console.log(options);
+            setOriginalOptions(updatedOptions);
+            setOptions(offset ? updatedOptions.slice(0,offset) : updatedOptions);
 
-                    setRichDataRenderer(true);
-                })
-                .catch(function (error) {
-                    // handle error
-                    console.log(error);
-                });
+            setRichDataRenderer(true);
         }
-        
-    }, [url]);
 
+        if(error){
+            //TODO tester l'url
+            console.log(error);
+        }
+    }, [response]);
+    
     //exécution à la création du composant
     useEffect(() => {
         documentClickHandler();
@@ -137,6 +132,7 @@ const Dropdown = (props) => {
     
     return (
         <DropdownContainer ref={dropdownRef}>
+            <Resetter />
             {props.title !== undefined ? <DropdownTitle>{props.title}</DropdownTitle> : false}
             <DropdownButton onClick={buttonClickHandler}>{buttonText}</DropdownButton>
             <DropdownListContainer>
@@ -151,11 +147,13 @@ const Dropdown = (props) => {
                             key={i} 
                             active={selectedOptions.includes(option.value)} 
                             value={option.value} 
+                            data={option.data === undefined ? false : option.data }
                             clickHandler={itemClickHandler} 
                             richDataRenderer={richDataRenderer} 
                             text={option.text} 
                         />
                     }) : <li>Aucuns résultat</li>}
+                    {/* TODO trouver un moyen de masquer ce bouton à la limite de l'offset sans interférer avec le document click qui gère la fermeture */}
                     {offset ? <DropdownMore onClick={loadMore}></DropdownMore> : false}
                 </DropdownList>
             </DropdownListContainer>

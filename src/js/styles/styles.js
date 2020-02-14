@@ -1,4 +1,11 @@
-import styled, { css } from 'styled-components';
+import styled, { css, createGlobalStyle } from 'styled-components';
+
+export const Resetter = createGlobalStyle`
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+p, ul, li {
+    margin: 0;
+}
+`;
 
 export const DropdownContainer = styled.div`
 color: #111;	
@@ -38,6 +45,7 @@ border: 1px solid #E2E2E2;
 font-weight: 500;
 outline: none;
 padding-left: 45px;
+box-sizing: border-box;
 background: url(../img/search.svg) no-repeat 12px 50%;
 margin-bottom: 12px;`;
 
@@ -79,6 +87,7 @@ line-height: 25px;
 padding: 10px;
 z-index: 1;
 box-shadow: 3px 3px 5px 2px rgba(229,229,229,1);
+list-style-type: none;
 ${props => props.active && css`
     display: block;
     opacity: 1;
@@ -87,6 +96,7 @@ ${props => props.active && css`
 export const DropdownListItem = styled.li`
 text-decoration: none;
 color: #111;
+display:block;
 padding-left: 16px;
 cursor: pointer;
 

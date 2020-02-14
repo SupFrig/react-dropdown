@@ -3,6 +3,32 @@ import ReactDOM from "react-dom";
 
 import '../scss/App.scss';
 import Dropdown from "./components/Dropdown.js";
+import styled, { createGlobalStyle } from 'styled-components';
+
+
+const GoogleFont = createGlobalStyle`
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+`;
+
+const Container = styled.div`
+width: 1160px;
+margin: 0 auto;
+color: #7A7A7A;
+font-family: Roboto;
+background: #fff;
+padding: 1rem 2rem;
+min-height: 200vh;`;
+
+const Title = styled.h1`
+font-size: 24px;
+font-weight: 900;
+line-height: 28px;
+padding-bottom: 2rem;
+`;
+
+const Subtitle = styled.h3`
+padding: 2rem 0rem;
+`;
 
 const options = [
     {text: "NoMeansNo", value: "nomeansno"},
@@ -51,17 +77,18 @@ const urlParams = {
 };
 
 const App = (props) => {
-    return <div className="Container">
-        <h1>Dropdown Component</h1>
-        <h3>Simple</h3>
+    return <Container>
+        <GoogleFont />
+        <Title>Dropdown Component</Title>
+        <Subtitle>Simple</Subtitle>
         <Dropdown options={options}/>
-        <h3>Multiple with title</h3>
+        <Subtitle>Multiple with title</Subtitle>
         <Dropdown title="Mes groupes préférés" options={optionsMultiple} multiple={true}/>
-        <h3>Multiple with search</h3>
+        <Subtitle>Multiple with search</Subtitle>
         <Dropdown options={optionsMultiple} multiple={true} search={true}/>
-        <h3>Multiple with search, select & clear buttons, display offset</h3>
+        <Subtitle>Multiple with search, select & clear buttons, display offset</Subtitle>
         <Dropdown options={optionsVeryLong} multiple={true} search={true} clearButton={true} selectAllButton={true} offset={4}/>
-        <h3>API Endpoint</h3>
+        <Subtitle>API Endpoint</Subtitle>
         <Dropdown 
             url="https://api.ulule.com/v1/search/projects" 
             urlParams={urlParams}
@@ -69,8 +96,8 @@ const App = (props) => {
             search={true} 
             clearButton={true} 
             selectAllButton={true} 
-            offset={8}/>
-    </div>
+            offset={4}/>
+    </Container>
 }
 
 ReactDOM.render(<App/>, document.getElementById('root'));
