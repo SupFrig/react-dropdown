@@ -1,12 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import '../scss/App.scss'
 import Dropdown from './components/Dropdown.js'
 import styled, { createGlobalStyle } from 'styled-components'
 
-const GoogleFont = createGlobalStyle`
-@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+const Background = styled.div`
+  background: #eee;
 `
 
 const Container = styled.div`
@@ -78,35 +77,36 @@ const urlParams = {
 
 const App = props => {
   return (
-    <Container>
-      <GoogleFont />
-      <Title>Dropdown Component</Title>
-      <Subtitle>Simple</Subtitle>
-      <Dropdown options={options} />
-      <Subtitle>Multiple with title</Subtitle>
-      <Dropdown title="Mes groupes préférés" options={optionsMultiple} multiple={true} />
-      <Subtitle>Multiple with search</Subtitle>
-      <Dropdown options={optionsMultiple} multiple={true} search={true} />
-      <Subtitle>Multiple with search, select & clear buttons, display offset</Subtitle>
-      <Dropdown
-        options={optionsVeryLong}
-        multiple={true}
-        search={true}
-        clearButton={true}
-        selectAllButton={true}
-        offset={4}
-      />
-      <Subtitle>API Endpoint</Subtitle>
-      <Dropdown
-        url="https://api.ulule.com/v1/search/projects"
-        urlParams={urlParams}
-        multiple={true}
-        search={true}
-        clearButton={true}
-        selectAllButton={true}
-        offset={4}
-      />
-    </Container>
+    <Background>
+      <Container>
+        <Title>Dropdown Component</Title>
+        <Subtitle>Simple</Subtitle>
+        <Dropdown options={options} />
+        <Subtitle>Multiple with title</Subtitle>
+        <Dropdown title="Mes groupes préférés" options={optionsMultiple} multiple={true} />
+        <Subtitle>Multiple with search</Subtitle>
+        <Dropdown options={optionsMultiple} multiple={true} search={true} />
+        <Subtitle>Multiple with search, select & clear buttons, display offset</Subtitle>
+        <Dropdown
+          options={optionsVeryLong}
+          multiple={true}
+          search={true}
+          clearButton={true}
+          selectAllButton={true}
+          offset={4}
+        />
+        <Subtitle>API Endpoint</Subtitle>
+        <Dropdown
+          url="https://api.ulule.com/v1/search/projects"
+          urlParams={urlParams}
+          multiple={true}
+          search={true}
+          clearButton={true}
+          selectAllButton={true}
+          offset={4}
+        />
+      </Container>
+    </Background>
   )
 }
 
