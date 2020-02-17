@@ -41,6 +41,12 @@ const Raised = styled.span`
 color: #BDBDBD;
 font-size: 12px;
 font-weight: 500;
+vertical-align:middle;
+`;
+
+const Egg = styled.img`
+height: 16px;
+margin: 0px 10px;
 `;
 
 const UluleItem = (props) => {
@@ -66,7 +72,10 @@ const UluleItem = (props) => {
             <Content>
                 <Title title={title}>{truncateText(title,20)}</Title>
                 <Subtitle title={subtitle}>{truncateText(subtitle,50)}</Subtitle>
-                <Raised>{data.amount_raised}{data.currency_display}</Raised>
+                <Raised>
+                    <Egg src="./img/Group.svg"/>
+                    {data.amount_raised}{data.currency_display}
+                </Raised>
             </Content>
         </Container>
     );
