@@ -5,5 +5,5 @@ Extensive React dropdown component
 After project checkout, run `npm install`
 
 # Build
-use `npm run watch` for active development
-use `npm run build` for production build
+ - use `npm run watch` for active development
+ - use `npm run build` for production build
