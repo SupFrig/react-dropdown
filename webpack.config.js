@@ -1,4 +1,5 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry : "./src/js/App.js",
@@ -30,5 +31,8 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: 'css/styles.css',
     }),
+    new CopyWebpackPlugin([
+        {from:'src/img',to:'img'} 
+    ]), 
   ]
 };

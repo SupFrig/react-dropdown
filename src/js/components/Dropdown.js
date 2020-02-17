@@ -13,6 +13,7 @@ import {
     DropdownSearchInput,
     DropdownMore,
     DropdownList,
+    DropdownEmptyResults,
     DropdownListContainer 
 } from "./../styles/styles.js";
 
@@ -40,6 +41,7 @@ const Dropdown = (props) => {
     const documentClickHandler = () => document.addEventListener('click', (e) => dropdownRef.current.contains(e.target) ? false : setActive(false));
 
     const defineText = () => {
+
         if(selectedOptions.length > 1){
             setButtonText(`${selectedOptions.length} valeurs sélectionnées`);
         }else if(selectedOptions.length == 1){
@@ -50,10 +52,8 @@ const Dropdown = (props) => {
     };
 
     const itemClickHandler = (e) => {
-        e.stopPropagation();
-        let itemValue = e.target.getAttribute('data-value');
-        //TODO faire un truc clean pour récupérer l'event itemClickHandler depuis le DOM ayant l'attrivut data value
-        if(itemValue === null) itemValue = e.target.parentNode.getAttribute('data-value');
+        e.preventDefault();
+        let itemValue = e.currentTarget.getAttribute('data-value');
 
         let updatedSelectedOptions;
         if(props.multiple){
@@ -114,13 +114,7 @@ const Dropdown = (props) => {
             
             setOriginalOptions(updatedOptions);
             setOptions(offset ? updatedOptions.slice(0,offset) : updatedOptions);
-
             setRichDataRenderer(true);
-        }
-
-        if(error){
-            //TODO tester l'url
-            console.log(error);
         }
     }, [response]);
     
@@ -152,9 +146,8 @@ const Dropdown = (props) => {
                             richDataRenderer={richDataRenderer} 
                             text={option.text} 
                         />
-                    }) : <li>Aucuns résultat</li>}
-                    {/* TODO trouver un moyen de masquer ce bouton à la limite de l'offset sans interférer avec le document click qui gère la fermeture */}
-                    {offset ? <DropdownMore onClick={loadMore}></DropdownMore> : false}
+                    }) : <DropdownEmptyResults>Aucuns résultat</DropdownEmptyResults>}
+                    {offset && (options < originalOptions) ? <DropdownMore onClick={loadMore}></DropdownMore> : false}
                 </DropdownList>
             </DropdownListContainer>
             <DropdownInput readOnly value={props.multiple ? selectedOptions : selectedOptions[0]} multiple={props.multiple ? true : false}>

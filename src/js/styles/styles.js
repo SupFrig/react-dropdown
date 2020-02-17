@@ -103,8 +103,13 @@ cursor: pointer;
 &:hover {
     color: #00A6F0;
 }
-
 ${props => props.active && css`
     color: #00A6F0;
     background: url(../img/go.svg) no-repeat left 50%;
 `}`;
+
+export const DropdownEmptyResults = styled.li`
+font-weight: 500;
+padding-left: 5px;
+font-size: 15px;
+`;
