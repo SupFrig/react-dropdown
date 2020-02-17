@@ -52,6 +52,10 @@ const Dropdown = (props) => {
     };
 
     const itemClickHandler = (e) => {
+<<<<<<< HEAD
+=======
+        e.stopPropagation();
+>>>>>>> 62a673fe5f1911751f7a9f21f060050c68536e4a
         e.preventDefault();
         let itemValue = e.currentTarget.getAttribute('data-value');
 
@@ -146,7 +150,11 @@ const Dropdown = (props) => {
                             richDataRenderer={richDataRenderer} 
                             text={option.text} 
                         />
+<<<<<<< HEAD
                     }) : <DropdownEmptyResults>Aucuns résultat</DropdownEmptyResults>}
+=======
+                    }) : <li>Aucuns résultat</li>}
+>>>>>>> 62a673fe5f1911751f7a9f21f060050c68536e4a
                     {offset && (options < originalOptions) ? <DropdownMore onClick={loadMore}></DropdownMore> : false}
                 </DropdownList>
             </DropdownListContainer>

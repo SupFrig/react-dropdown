@@ -5,7 +5,7 @@ import UluleItem from "./../components/UluleItem.js";
 
 const DropdownItem = (props) => {
     return (
-        <DropdownListItem onClickCapture={props.clickHandler} active={props.active} data-value={props.value}>
+        <DropdownListItem onClick={props.clickHandler} active={props.active} data-value={props.value}>
             {props.richDataRenderer ? <UluleItem active={props.active} value={props.value} data={props.data} /> : props.text}
         </DropdownListItem>
     );
